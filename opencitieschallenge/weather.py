@@ -13,8 +13,6 @@ def get_params(root):
 	return wtherdict
 
 def get_raw_weather(root, in_date, in_time):
-	wd = get_params(root)
-
 	cur_date = time.strftime("%Y%m%d")
 	
 	if ((int)(in_date) > (int)(cur_date) + 4):
@@ -32,3 +30,12 @@ def get_raw_weather(root, in_date, in_time):
 		if (time_hours <= (int)(p.text)):
 			return p
 			break
+
+def get_weather(root, in_date, in_time):
+	wd = get_params(root)
+	
+	rw = get_raw_weather(root, in_date, in_time)
+
+	for n in wd:
+		print (wd[n]['name'] + ": " + rw[wd[n]['name']] + " " + wd[n]['units'])
+	
