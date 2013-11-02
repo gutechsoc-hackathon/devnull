@@ -12,7 +12,7 @@ def getVenues(locationJSON):
     print longitude
     locationString = str(latitude) + ',' + str(longitude)
     # print client.venues.explore({'near':'Glasgow'})
-    return client.venues.explore({'ll':locationString, 'radius':200})
+    return client.venues.explore({'ll':locationString, 'radius':100})
 
 
 
@@ -26,8 +26,8 @@ client = foursquare.Foursquare(client_id='CD3AGIUUQXJLVJGDPNJH0RSEGJ5M3DEZVFF1VV
 
 obj_json = u'{"latitude": 55.8580, "longitude": -4.2590}'
 
-venues = json.loads(getVenues(obj_json))
-print venues['name']
+venues = getVenues(obj_json)
+print venues
 
 #location = json.loads(obj_json)
 
