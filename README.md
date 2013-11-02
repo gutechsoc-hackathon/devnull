@@ -3,7 +3,7 @@ opencitieschallange
 
 Authors:
 Keir 'Kaffo' Smith
-Sean Jacobson
+Sean Jakobsen
 Edvin Mallocbiscuitvitz
 The other two
 
