@@ -15,7 +15,7 @@ def get_params(root):
 def get_raw_weather(root, in_date, in_time):
 	cur_date = time.strftime("%Y%m%d")
 	
-	if ((int)(in_date) > (int)(cur_date) + 4):
+	if ((int)(in_date) > (int)(cur_date) + 4 or (int)(in_date) < (int)(cur_date)):
 		print("Date Specificed outside Predition Bounds!") 
 		return
 
@@ -36,6 +36,16 @@ def get_weather(root, in_date, in_time):
 	
 	rw = get_raw_weather(root, in_date, in_time)
 
+	weth = []
+
 	for n in wd:
-		print (wd[n]['name'] + ": " + rw[wd[n]['name']] + " " + wd[n]['units'])
+		 weth.append((n + ": " + rw.attrib[wd[n]['name']] + " " + wd[n]['units']))
+	
+	return weth
+
+def get_general_weather(root, in_date, in_time):
+	wd = get_params(root)
+
+	rw = get_raw_weather(root, in_date, in_time)
+
 	
