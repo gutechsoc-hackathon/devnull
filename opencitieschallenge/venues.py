@@ -1,5 +1,7 @@
 import foursquare
 import json
+import logging
+logging.basicConfig()
 
 def getVenues(locationJSON):
     location = json.loads(locationJSON)
@@ -24,13 +26,11 @@ client = foursquare.Foursquare(client_id='CD3AGIUUQXJLVJGDPNJH0RSEGJ5M3DEZVFF1VV
 
 obj_json = u'{"latitude": 55.8580, "longitude": -4.2590}'
 
-print getVenues(obj_json)
+venues = json.loads(getVenues(obj_json))
+print venues['name']
 
-location = json.loads(obj_json)
+#location = json.loads(obj_json)
 
-location2 = getVenues(obj_json)
+#location2 = getVenues(obj_json)
 
-
-print locationString
-
-print(repr(location))
+#print(repr(location))
