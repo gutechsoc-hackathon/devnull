@@ -1,10 +1,8 @@
-import requests
+import requests, time
 import xml.etree.ElementTree as ET
 
 def get_data():
-		r = requests.get('http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/310009?res=3hourly&key=d73af5c0-e626-4591-ab9b-ef36f4d8956c')
-
-		r = requests.get(url)
+	r = requests.get('http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/xml/310009?res=3hourly&key=d73af5c0-e626-4591-ab9b-ef36f4d8956c')
 
 	return ET.fromstring(r.text)
 
@@ -12,9 +10,25 @@ def get_params(root):
 	wtherdict = {}
 	for p in root[0]:
 		wtherdict[p.text] = p.attrib
-	return wd
+	return wtherdict
 
-def get_raw_weather(root, date, time)
+def get_raw_weather(root, in_date, in_time):
 	wd = get_params(root)
 
+	cur_date = time.strftime("%Y%m%d")
 	
+	if ((int)(in_date) > (int)(cur_date) + 4):
+		print("Date Specificed outside Predition Bounds!") 
+		return
+
+	for p in root[1][0]:
+		this_date = p.attrib['value'][0:-1].replace('-', '')
+		if (this_date == in_date):
+			data = p
+			break
+
+	time_hours = (int)(in_time[0:2]) * 60
+	for p in data:
+		if (time_hours <= (int)(p.text)):
+			return p
+			break
