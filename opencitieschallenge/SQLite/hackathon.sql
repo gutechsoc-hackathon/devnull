@@ -1,0 +1,30 @@
+BEGIN TRANSACTION;
+
+CREATE TABLE Users(
+	UId INTEGER,
+	Email TEXT,
+	SId TEXT,
+	LastAccess TEXT,
+	Password TEXT,
+	PRIMARY KEY(UId)
+);
+CREATE TABLE Locations(
+	UId INTEGER,
+	Lng REAL,
+	Lat REAL,
+	Time TEXT,
+	Duration INTEGER,
+	PRIMARY KEY(UId, Lng, Lat, Time),
+	FOREIGN KEY(UId) REFERENCES Users(UId)
+);
+CREATE TABLE Visited_Venues(
+	UId INTEGER,
+	FSId TEXT,
+	Name TEXT,
+	WeatherType INTEGER,
+	Duration INTEGER,
+	PRIMARY KEY(UId, FSId),
+	FOREIGN KEY(UId) REFERENCES Users(UId)
+);
+
+COMMIT;
