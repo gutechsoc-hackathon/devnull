@@ -1,4 +1,5 @@
 import json, weather, time, string
+from venues.py import getVenues
 from sets import Set
 
 def dealWithTags(validCats, tags, catID, timeVar, temp, weatherType):
