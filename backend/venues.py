@@ -13,13 +13,13 @@ def getVenues(locationJSON):
     
     locationString = str(latitude) + ',' + str(longitude)
     # print client.venues.explore({'near':'Glasgow'})
-    venues = client.venues.explore({'ll':locationString, 'radius':200})
+    venues = client.venues.explore({'ll':locationString, 'radius':500})
 
     deliverable = [];
 
     items = venues["groups"][0]["items"]
     for item in items:
-        deliverable.append( {"lat":item["venue"]["location"]["lat"], "lng":item["venue"]["location"]["lng"], "name":item["venue"]["name"], "likes":item["venue"]["likes"]["count"], "id":item["venue"]["id"]} )
+        deliverable.append( {"lat":item["venue"]["location"]["lat"], "lng":item["venue"]["location"]["lng"], "name":item["venue"]["name"], "likes":item["venue"]["likes"]["count"], "id":item["venue"]["id"], "cat":item["venue"]["categories"][0]['id']} )
 
     return json.dumps(deliverable)
 
