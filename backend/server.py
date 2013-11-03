@@ -1,6 +1,8 @@
 from flask import Flask, request
+import sqlite3
 import json
-import array
+
+DB_FILE = 'hackathon.db'
 
 AUTH = {'email' : 'user@test.com',
         'password' : 'pass'
@@ -11,26 +13,28 @@ QUESTIONS = ()
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
+def error(message):
+    return json.dumps({'error' : True, 'error_message' : message})
+
 @app.route('/auth', methods=['POST'])
 def auth():
-    data = request.get_json()
-    print(data)
-    if data['email'] == AUTH['email'] and data['password'] == AUTH['password']:
-        response = {
-                'error' : False,
-                'data' : {
-                    'sid' : SID,
-                    'questionms' : QUESTIONS
-                    }
-                }
+    data = request.get_json(force=True) # fix client to avoid the force
 
-        return json.dumps(response)
+    if 'email' in data.keys() or 'password' in data.keys():
+        if data['email'] == AUTH['email'] and data['password'] == AUTH['password']:
+            response = {
+                    'error' : False,
+                    'data' : {
+                        'sid' : SID,
+                        'questionms' : QUESTIONS
+                        }
+                    }
+
+            return json.dumps(response)
+        else:
+            return error('Invalid username and/or password.')
     else:
-        response = {
-                'error' : True,
-                'error_message' : 'Invalid username and/or password.'
-                }
-        return json.dumps(response)
+        return error('Invalid format')
 
 
 if __name__ == '__main__':

@@ -17,6 +17,11 @@ response = json.loads(response.text)
 if not response['error'] or response['data']['sid'] == '1234567890':
     print("\tOK DATA is Ok")
 
+response = requests.post(URL, data=json.dumps({}), headers=HEADER)
+response = json.loads(response.text)
+if response['error'] and (response['error_message'] == 'Invalid format'):
+    print("\tINVALID FORMAT is Ok")
+
 response = requests.post(URL, data=json.dumps(FAIL_DATA), headers=HEADER)
 response = json.loads(response.text)
 if response['error'] and response['error_message']:
