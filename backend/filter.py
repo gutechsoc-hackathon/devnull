@@ -1,6 +1,23 @@
 import json, weather, time, string
 from sets import Set
 
+def dealWithTags(validCats, tags, catID, timeVar, temp, weatherType):
+    ######## TODO ###########
+    ### HANDLE AGE GROUPS ###
+    if temp < tags['temp']['lower'] or temp > tags['temp']['upper']:
+        validCats.discard(catID);
+    if weatherType < tags['weather']['lower'] or weatherType > tags['weather']['upper']:
+        validCats.discard(catID);
+    timeInt = int(string.replace(timeVar, ":", ""))
+    timeCompU = int(tags['time']['upper'])
+    timeCompL = int(tags['time']['lower'])
+    if timeInt < timeCompL or timeInt > timeCompU:
+        validCats.discard(catID)
+    return validCats
+
+def get_filtered_venues():
+    return filteredVenues
+
 venuesFile = open("venues.txt")
 catFile = open("algs/cat3.txt")
 
@@ -27,21 +44,6 @@ validCatsCpy = Set([])
 for venue in venues:
     validCats.add(venue['cat'])
     validCatsCpy.add(venue['cat'])
-
-def dealWithTags(validCats, tags, catID, timeVar, temp, weatherType):
-    ######## TODO ###########
-    ### HANDLE AGE GROUPS ###
-    if temp < tags['temp']['lower'] or temp > tags['temp']['upper']:
-        validCats.discard(catID);
-    if weatherType < tags['weather']['lower'] or weatherType > tags['weather']['upper']:
-        validCats.discard(catID);
-    timeInt = int(string.replace(timeVar, ":", ""))
-    timeCompU = int(tags['time']['upper'])
-    timeCompL = int(tags['time']['lower'])
-    if timeInt < timeCompL or timeInt > timeCompU:
-        validCats.discard(catID)
-    return validCats
-
 
 #print cats
 #print
@@ -93,9 +95,6 @@ filteredVenues = [];
 for venue in venues:
     if venue['cat'] in validCats:
         filteredVenues.append(venue)
-        
-def get_filtered_venues():
-    return filteredVenues
     
 #print get_filtered_venues()
 
