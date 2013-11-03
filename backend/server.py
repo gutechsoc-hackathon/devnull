@@ -7,9 +7,6 @@ import uuid
 
 DATABASE = 'hackathon.db'
 
-AUTH = {'email' : 'user@test.com',
-        'password' : 'pass'
-        }
 QUESTIONS = ()
 
 app = Flask(__name__)
@@ -62,7 +59,7 @@ def login(email, password):
                     }
             return json.dumps(response)
         else:
-            return error('Something')
+            return error('Couldn\'t login, try again later.')
 
 
 @app.route('/auth', methods=['POST'])
@@ -73,7 +70,6 @@ def auth():
         return login(data['email'], data['password'])
     else:
         return error('Invalid format')
-
 
 
 if __name__ == '__main__':
