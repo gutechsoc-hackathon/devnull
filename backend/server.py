@@ -44,41 +44,51 @@ def login(email, password):
     user = query_db(query, (email, password), one=True)
     if user is None:
         return error('Invalid username and/or password.')
-    else:
-        sid = generate_session_id()
-        query = 'UPDATE users SET session_id = ?, timestamp = datetime(\'now\', \'localtime\') WHERE email = ?'
-        db = get_db()
-        cursor = db.execute(query, (sid, email))
-        db.commit()
+    sid = generate_session_id()
+    query = 'UPDATE users SET session_id = ?, timestamp = datetime(\'now\', \'localtime\') WHERE email = ?'
+    db = get_db()
+    cursor = db.execute(query, (sid, email))
+    db.commit()
 
-        if cursor.rowcount:
-            response = {
-                    'error' : False,
-                    'data' : {
-                        'sid' : sid,
-                        'questions' : QUESTIONS
-                        }
+    if cursor.rowcount:
+        response = {
+                'error' : False,
+                'data' : {
+                    'sid' : sid,
+                    'questions' : QUESTIONS
                     }
-            return json.dumps(response)
-        else:
-            return error('Couldn\'t login, try again later.')
+                }
+        return json.dumps(response)
+    
+    return error('Couldn\'t login, try again later.')
 
 
 @app.route('/ping', methods=['POST'])
 def ping():
     data = request.get_json(force=True)
-    keys = data.keys()
 
-    if 'sid' in keys:
-        query = 'SELECT COUNT(*) as count FROM users WHERE sid = ?'
-        count = query_db(query, data['sid'], one=True)
-        print(count)
-        # update session
-        if 'lng' in keys and 'lat' in keys:
-            #new location record
-            pass
+    if 'sid' in data:
+        query = 'SELECT COUNT(*) as count FROM users WHERE session_id = ?'
+        user = query_db(query, (data['sid'],), one=True)
+        #if not too far from last position, just increment time
+        if user and 'id' in user:
+            db = get_db()
+            query = 'INSERT INTO locations(user_id, lng, lat, mood) VALUES(?, ?, ?, ?)'
+            cursor = db.execute(query, (user['id'], data['lng'], data['lat'], data['mood']))
+            db.commit()
 
-    return ''
+        response = {
+                'error' : False,
+                'data' : {
+                    'add' : [],
+                    'del' : [],
+                    'questions' : [],
+                    }
+                }
+
+        return json.dumps(response)
+
+    return error('Not authenticated') # possibly redirect?
 
 
     

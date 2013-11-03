@@ -2,33 +2,41 @@ import requests, json
 
 URL = 'http://localhost:5000/'
 HEADER = {'Content-type' : 'application/json', 'Accept' : 'text/plain'}
-OK_DATA = {
+OK_AUTH = {
         'email' : 'user@test.com',
         'password' : 'pass'
         }
-FAIL_DATA = {
+FAIL_AUTH = {
         'email' : 'user',
         'password' : 'something'
+        }
+
+OK_PING = {
+        'sid' : '',
+        'lng' : 50.78,
+        'lat' : 50.78,
+        'mood' : 0
         }
 
 def url(method):
     return URL + method
 
-print("Testing /auth")
-response = requests.post(url('auth'), data=json.dumps(OK_DATA), headers=HEADER)
+response = requests.post(url('auth'), data=json.dumps(OK_AUTH), headers=HEADER)
 response = json.loads(response.text)
 if not response['error']:
-    response = json.loads(requests.post(url('ping'), data=json.dumps({'sid':response['data']['sid']}),headers=HEADER))
-    print("\tOK DATA is Ok")
+    OK_PING['sid'] = response['data']['sid']
+    response = json.loads(requests.post(url('ping'), data=json.dumps(OK_PING), headers=HEADER).text)
+    if not response['error'] and 'add' in response['data'] and 'del' in response['data']:
+        print("OK AUTH is Ok")
 
 response = requests.post(url('auth'), data=json.dumps({}), headers=HEADER)
 response = json.loads(response.text)
 if response['error'] and (response['error_message'] == 'Invalid format'):
-    print("\tINVALID FORMAT is Ok")
+    print("INVALID FORMAT AUTH is Ok")
 
-response = requests.post(url('auth'), data=json.dumps(FAIL_DATA), headers=HEADER)
+response = requests.post(url('auth'), data=json.dumps(FAIL_AUTH), headers=HEADER)
 response = json.loads(response.text)
 if response['error'] and response['error_message']:
-    print("\tFAIL DATA is Ok")
+    print("FAIL AUTH is Ok")
 
 
