@@ -46,8 +46,10 @@ def login(email, password):
         return error('Invalid username and/or password.')
     else:
         sid = generate_session_id()
-        query = 'UPDATE users SET session_id = ? WHERE email = ?'
-        cursor = get_db().execute(query, (sid, email))
+        query = 'UPDATE users SET session_id = ?, timestamp = datetime(\'now\', \'localtime\') WHERE email = ?'
+        db = get_db()
+        cursor = db.execute(query, (sid, email))
+        db.commit()
 
         if cursor.rowcount:
             response = {
@@ -62,11 +64,31 @@ def login(email, password):
             return error('Couldn\'t login, try again later.')
 
 
+@app.route('/ping', methods=['POST'])
+def ping():
+    data = request.get_json(force=True)
+    keys = data.keys()
+
+    if 'sid' in keys:
+        query = 'SELECT COUNT(*) as count FROM users WHERE sid = ?'
+        count = query_db(query, data['sid'], one=True)
+        print(count)
+        # update session
+        if 'lng' in keys and 'lat' in keys:
+            #new location record
+            pass
+
+    return ''
+
+
+    
+
 @app.route('/auth', methods=['POST'])
 def auth():
     data = request.get_json(force=True) # fix client to avoid the force
+    keys = data.keys()
 
-    if 'email' in data.keys() and 'password' in data.keys():
+    if 'email' in keys and 'password' in keys:
         return login(data['email'], data['password'])
     else:
         return error('Invalid format')
