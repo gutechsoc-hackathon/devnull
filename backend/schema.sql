@@ -1,30 +1,29 @@
 BEGIN TRANSACTION;
 
-CREATE TABLE Users(
-	UId INTEGER,
-	Email TEXT,
-	SId TEXT,
-	LastAccess TEXT,
-	Password TEXT,
-	PRIMARY KEY(UId)
+CREATE TABLE users(
+	id INTEGER,
+	email TEXT,
+	sId TEXT,
+	last_access TEXT,
+	password TEXT,
+	PRIMARY KEY(id)
 );
-CREATE TABLE Locations(
-	UId INTEGER,
-	Lng REAL,
-	Lat REAL,
-	Time TEXT,
-	Duration INTEGER,
-	PRIMARY KEY(UId, Lng, Lat, Time),
-	FOREIGN KEY(UId) REFERENCES Users(UId)
+CREATE TABLE locations(
+	user_id INTEGER,
+	lng REAL,
+	lat REAL,
+	time TEXT,
+	duration INTEGER,
+	PRIMARY KEY(user_id, lng, lat, time),
+	FOREIGN KEY(user_id) REFERENCES users(id)
 );
-CREATE TABLE Visited_Venues(
-	UId INTEGER,
-	FSId TEXT,
-	Name TEXT,
-	WeatherType INTEGER,
-	Duration INTEGER,
-	PRIMARY KEY(UId, FSId),
-	FOREIGN KEY(UId) REFERENCES Users(UId)
+CREATE TABLE visited_venues(
+	user_id INTEGER,
+	foursquare_id TEXT,
+	weather_type_id INTEGER,
+	duration INTEGER,
+	PRIMARY KEY(user_id, foursquare_id),
+	FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
 COMMIT;
