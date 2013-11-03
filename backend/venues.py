@@ -3,6 +3,8 @@ import json
 import logging
 logging.basicConfig()
 
+### Due to unsolvable errors in the time, this is hardcoded for the latitude and longitude of SAWB, results are JSON text stored in venues.txt
+
 def getVenues(locationJSON):
     location = json.loads(locationJSON)
 
@@ -24,7 +26,10 @@ def getVenues(locationJSON):
 
 client = foursquare.Foursquare(client_id='CD3AGIUUQXJLVJGDPNJH0RSEGJ5M3DEZVFF1VVKM4VFIHULE', client_secret='V0IENWE4MZPFSTKPQ1PWVZF33UUDTEADRHWGJPHBC2ERFIEA', version='20131101')
 
-obj_json = u'{"latitude": 55.8580, "longitude": -4.2590}'
+obj_json = u'{"latitude": 55.873972, "longitude": -4.292076}'
 
 venues = getVenues(obj_json)
-print venues
+
+f = open("venues.txt", "w")
+f.write(venues)
+f.close()
