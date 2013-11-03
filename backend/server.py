@@ -1,6 +1,8 @@
 from flask import Flask, request, g
 import sqlite3
 import json
+import OpenSSL
+import uuid
 
 
 DATABASE = 'hackathon.db'
@@ -8,7 +10,6 @@ DATABASE = 'hackathon.db'
 AUTH = {'email' : 'user@test.com',
         'password' : 'pass'
         }
-SID = '1234567890'
 QUESTIONS = ()
 
 app = Flask(__name__)
@@ -36,26 +37,40 @@ def query_db(query, args=(), one=False):
 def error(message):
     return json.dumps({'error' : True, 'error_message' : message})
 
+def generate_session_id(num_bytes = 16):
+    # http://stackoverflow.com/questions/817882/unique-session-id-in-python/6092448#6092448
+    return str(uuid.UUID(bytes = OpenSSL.rand.bytes(16)))
+
+
+def login(email, password):
+    query = 'SELECT * FROM users WHERE email = ? AND password = ?'
+    user = query_db(query, (email, password), one=True)
+    if user is None:
+        return error('Invalid username and/or password.')
+    else:
+        sid = generate_session_id()
+        query = 'UPDATE users SET session_id = ? WHERE email = ?'
+        cursor = get_db().execute(query, (sid, email))
+
+        if cursor.rowcount:
+            response = {
+                    'error' : False,
+                    'data' : {
+                        'sid' : sid,
+                        'questions' : QUESTIONS
+                        }
+                    }
+            return json.dumps(response)
+        else:
+            return error('Something')
+
 
 @app.route('/auth', methods=['POST'])
 def auth():
     data = request.get_json(force=True) # fix client to avoid the force
 
     if 'email' in data.keys() and 'password' in data.keys():
-        query = 'SELECT * FROM users WHERE email = ? AND password = ?'
-        user = query_db(query, (data['email'], data['password']), one=True)
-        if user is None:
-            return error('Invalid username and/or password.')
-        else:
-            response = {
-                    'error' : False,
-                    'data' : {
-                        'sid' : SID,
-                        'questionms' : QUESTIONS
-                        }
-                    }
-
-            return json.dumps(response)
+        return login(data['email'], data['password'])
     else:
         return error('Invalid format')
 
