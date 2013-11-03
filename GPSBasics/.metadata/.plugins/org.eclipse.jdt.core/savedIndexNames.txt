@@ -1,0 +1,4 @@
+INDEX VERSION 1.126+C:\Users\Iulia\Desktop\GPSBasics\.metadata\.plugins\org.eclipse.jdt.core
+257836195.index
+704175721.index
+301091345.index
